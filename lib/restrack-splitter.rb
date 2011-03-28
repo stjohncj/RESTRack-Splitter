@@ -3,7 +3,7 @@ require 'restrack-client'
 
 module RESTRack
   class Splitter
-
+# TODO: Thread get, delete, post, and put calls
     def initialize(uri_list, format=:JSON)
       @clients = uri_list.collect do |uri|
         RESTRack::Client.new(uri, format)
