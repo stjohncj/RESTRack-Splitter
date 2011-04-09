@@ -3,7 +3,7 @@ require 'restrack-client'
 
 module RESTRack
   class Splitter
-# TODO: Thread get, delete, post, and put calls
+
     def initialize(uri_list, format=:JSON)
       @clients = uri_list.collect do |uri|
         RESTRack::Client.new(uri, format)
@@ -12,24 +12,36 @@ module RESTRack
     end
 
     def method_missing(resource_name, *args)
-      @clients[@next_client].resource_name(*args)
+      execute {|client| client.__send__(resource_name.to_sym, *args) }
       self
     end
 
     def get
-      @clients.each {|client| client.get }
+      execute {|client| client.get }
     end
 
     def delete
-      @clients.each {|client| client.delete }
+      execute {|client| client.delete }
     end
 
     def post(data=nil)
-      @clients.each {|client| client.post(data) }
+      execute {|client| client.post(data) }
     end
 
     def put(data=nil)
-      @clients.each {|client| client.put(data) }
+      execute {|client| client.put(data) }
+    end
+
+    private
+
+    def execute(&action)
+      threads = []
+      results = []
+      for client in @clients
+        threads << Thread.new(client) {|client| results << action.call(client) }
+      end
+      threads.each { |thread| thread.join }
+      results
     end
 
   end
