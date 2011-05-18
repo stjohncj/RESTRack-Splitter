@@ -1,4 +1,4 @@
-# RESTRack::Client
+# RESTRack::Splitter
 
 A library for interacting with RESTful web services with automatic distribution across multiple nodes of a cluster.
 Use this to communicate with RESTRack based services.
