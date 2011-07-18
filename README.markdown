@@ -1,19 +1,20 @@
 # RESTRack::Splitter
 
 A library for interacting with RESTful web services with automatic distribution across multiple nodes of a cluster.
-Use this to communicate with RESTRack based services.
+This gem was written to communicate with RESTRack based services, although it provides a convenient API to any RESTful service.
 
 
 ## Usage
     
-    uri = URI.new('http://localhost')
-    client = RESTRack::Splitter.new(uri)
-    client = RESTRack::Splitter.new('http://localhost')
-    foo_resource = client.foo(123)                                    # pivot object that hasn't yet made request
+    uri = URI.new('http://foobar-provider.example.com')
+    provider = RESTRack::Splitter.new(uri)
+    provider = RESTRack::Splitter.new('http://foobar-provider.example.com')
+    foo = provider.foo(123).get                                       # request is made to GET /foo/123, foo will be an array of responses
+    foo_resource = provider.foo(123)                                  # pivot object that hasn't yet made request
     foo = foo_resource.get( { :data => 'something_here' } )           # request is made to GET /foo/123, foo will be an array of responses
-    bar = client.foo(123).bar                                         # pivot object that hasn't yet made request
+    bar = provider.foo(123).bar                                       # pivot object that hasn't yet made request
     bar.delete                                                        # request is made to DELETE /foo/123/bar from each node
-    bar = client.foo(123).bar.post( { :data => 'something_here' } )   # request is made to POST /foo/123/bar, bar will be an array of responses
+    bar = provider.foo(123).bar.post( { :data => 'something_here' } ) # request is made to POST /foo/123/bar, bar will be an array of responses
 
 
 ## License
